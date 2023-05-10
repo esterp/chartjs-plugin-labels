@@ -478,44 +478,42 @@
         label.barTotalPercentage = {};
       });
     },
-	afterDatasetsDraw: function(chart, easing) {
-		// To only draw at the end of animation, check for easing === 1
-		var ctx = chart.ctx;
-		chart.data.datasets.forEach(function (dataset, i) {
-			var meta = chart.getDatasetMeta(i);
-			if (!meta.hidden) {
+    afterDatasetsDraw: function(chart, easing) {
+        // To only draw at the end of animation, check for easing === 1
+        var ctx = chart.ctx;
+        chart.data.datasets.forEach(function (dataset, i) {
+            var meta = chart.getDatasetMeta(i);
+                if (!meta.hidden) {
+                    if (chart.config.type === 'horizontalBar') {
+                        meta.data.forEach(function(element, index) {
+                            // Draw the text in black, with the specified font
+			    ctx.fillStyle = 'black';
+			    var fontSize = 12;
+			    var fontStyle = 'normal';
+			    var fontFamily = 'Helvetica Neue';
+			    ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
 
+			    // Just naively convert to string for now
+			    var dataString = dataset.data[index].toString();
 
-				if (chart.config.type === 'horizontalBar') {
-					meta.data.forEach(function(element, index) {
-						// Draw the text in black, with the specified font
-						ctx.fillStyle = 'black';
-						var fontSize = 12;
-						var fontStyle = 'normal';
-						var fontFamily = 'Helvetica Neue';
-						ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+			    // Make sure alignment settings are correct
+			    ctx.textAlign = 'right';
+			    ctx.textBaseline = 'middle';
 
-						// Just naively convert to string for now
-						var dataString = dataset.data[index].toString();
-
-						// Make sure alignment settings are correct
-						ctx.textAlign = 'right';
-						ctx.textBaseline = 'middle';
-
-						var padding = -6;
-						var position = element.tooltipPosition();
-						ctx.fillText(dataString, position.x - (fontSize / 2) + padding, position.y);
-					});
-				} else {
-					if (!SUPPORTED_TYPES[chart.config.type]) {
-						return;
-					}
-					chart._labels.forEach(function (label) {
-						label.render();
-					});
-				}
-			}
-		});
-	}
+			    var padding = -6;
+			    var position = element.tooltipPosition();
+			    ctx.fillText(dataString, position.x - (fontSize / 2) + padding, position.y);
+			});
+		    } else {
+                        if (!SUPPORTED_TYPES[chart.config.type]) {
+                            return;
+                        }
+                        chart._labels.forEach(function (label) {
+                            label.render();
+                        });
+                    }
+                }
+	});
+    }
   });
 })();
